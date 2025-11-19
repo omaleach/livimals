@@ -71,7 +71,3 @@ add_livimal <- function(animal,
     asp = 1,
     inherit.aes = FALSE, ...)
 }
-
-#devtools::document()
-#devtools::load_all()
-#devtools::install()

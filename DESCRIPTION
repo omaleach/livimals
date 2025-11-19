@@ -3,7 +3,7 @@ Type: Package
 Title: Animal silhouettes for plots
 Version: 0.1.0
 Authors@R: person("Liv L", email = "oliviamaleach@gmail.com", role = c("aut", "cre"))
-Description: Adds animal silhouettes to figures in base R and ggplot. List available silhouettes and preview them. Add them to figures and specify coordinates, size, or colour. 
+Description: Adds animal silhouettes to figures in ggplot2. List available silhouettes and preview them. Add them to figures and specify coordinates, size, or colour. 
 Depends:
     R (>= 4.0.0)
 Imports:

@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_livimal.R
 \name{add_livimal}
 \alias{add_livimal}
-\title{Add a livimals silhouette to a ggplot}
+\title{Add a livimals silhouette to a ggplot!}
 \usage{
 add_livimal(
   animal,
@@ -12,8 +12,7 @@ add_livimal(
   color = "black",
   mapping = NULL,
   data = NULL,
-  x_val = NULL,
-  y_val = NULL
+  ...
 )
 }
 \arguments{
@@ -33,5 +32,5 @@ add_livimal(
 A ggplot2 layer
 }
 \description{
-Add a livimals silhouette to a ggplot
+Add a livimals silhouette to a ggplot!
 }

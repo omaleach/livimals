@@ -1,5 +1,5 @@
 # livimals
-An R package for adding animal silhouettes to base R and ggplot2 plots. 
+An R package for adding animal silhouettes to ggplot2 plots. 
 You can preview available silhouettes, customize size, color, and specify exact placement on your plots.
 
 ---

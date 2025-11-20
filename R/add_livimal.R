@@ -1,7 +1,7 @@
 #' Add a livimals silhouette to a ggplot!
 #'
 #' @param animal Name of the image file (without .png)
-#' @param size Size of the image (0.1 is small, 0.5 is big)
+#' @param data A dataframe
 #' @param x Optional x-position. Used only when no aes() is supplied.
 #' @param y Optional y-position. Used only when no aes() is supplied.
 #' @param color Optional color to apply to the silhouette (default "black")
@@ -54,7 +54,7 @@ add_livimal <- function(animal,
   # No mapping
   if (!is.null(data)) {
     df <- data
-    df$image <- rep(tmp_file, nrow(df)) 
+    df$image <- rep(tmp_file, nrow(df))
   } else {
     if (is.null(x) | is.null(y)) {
       stop("You must provide either x and y or a data frame if mapping is NULL")

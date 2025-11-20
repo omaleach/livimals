@@ -25,7 +25,9 @@ add_livimal(
 
 \item{mapping}{Optional aes() for x, y, or image.}
 
-\item{size}{Size of the image (0.1 is small, 0.5 is big)}
+\item{data}{A dataframe}
+
+\item{...}{Additional arguments passed to geom_image()}
 }
 \value{
 A ggplot2 layer

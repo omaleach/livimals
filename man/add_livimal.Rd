@@ -6,7 +6,6 @@
 \usage{
 add_livimal(
   animal,
-  size = 0.2,
   x = 1,
   y = 1,
   color = "black",
@@ -18,8 +17,6 @@ add_livimal(
 \arguments{
 \item{animal}{Name of the image file (without .png)}
 
-\item{size}{Size of the image (0.1 is small, 0.5 is big)}
-
 \item{x}{Optional x-position. Used only when no aes() is supplied.}
 
 \item{y}{Optional y-position. Used only when no aes() is supplied.}
@@ -27,6 +24,8 @@ add_livimal(
 \item{color}{Optional color to apply to the silhouette (default "black")}
 
 \item{mapping}{Optional aes() for x, y, or image.}
+
+\item{size}{Size of the image (0.1 is small, 0.5 is big)}
 }
 \value{
 A ggplot2 layer

@@ -10,7 +10,6 @@
 #' @return A ggplot2 layer
 #' @export
 add_livimal <- function(animal,
-                        size = 0.2,
                         x = 1,
                         y = 1,
                         color = "black",
@@ -46,7 +45,6 @@ add_livimal <- function(animal,
       ggimage::geom_image(
         data = df,
         mapping = mapping,
-        size = size,
         by = "width",
         asp = 1
         inherit.aes = TRUE, ...))
@@ -65,7 +63,6 @@ add_livimal <- function(animal,
   ggimage::geom_image(
     data = df,
     mapping = aes(x = x, y = y, image = image),
-    size = size,
     by = "width",
     asp = 1,
     inherit.aes = FALSE, ...)

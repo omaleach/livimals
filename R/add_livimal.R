@@ -48,8 +48,7 @@ add_livimal <- function(animal,
         mapping = mapping,
         size = size,
         by = "width",
-        asp = 1,
-        image = tmp_file,
+        asp = 1
         inherit.aes = TRUE, ...))
   }
   # No mapping

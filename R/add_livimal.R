@@ -55,7 +55,7 @@ add_livimal <- function(animal,
   # No mapping
   if (!is.null(data)) {
     df <- data
-    df$image <- tmp_file
+    df$image <- rep(tmp_file, nrow(df)) 
   } else {
     if (is.null(x) | is.null(y)) {
       stop("You must provide either x and y or a data frame if mapping is NULL")

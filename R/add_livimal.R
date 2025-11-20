@@ -44,6 +44,7 @@ add_livimal <- function(animal,
     return(
       ggimage::geom_image(
         data = df,
+        image = tmp_file,
         mapping = mapping,
         by = "width",
         asp = 1,
@@ -62,6 +63,7 @@ add_livimal <- function(animal,
 
   ggimage::geom_image(
     data = df,
+    image = tmp_file,
     mapping = aes(x = x, y = y, image = image),
     by = "width",
     asp = 1,

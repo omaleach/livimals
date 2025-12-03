@@ -13,7 +13,7 @@
 col_livimal <- function(animal,
                         x = 1,
                         y = 1,
-                        color = NULL,
+                        color = "black",
                         mapping = NULL,
                         data = NULL, ...) {
 
@@ -21,30 +21,46 @@ col_livimal <- function(animal,
     stop("Package 'magick' is required")
   }
 
+# Names of PNGs that should NEVER be recolored
+  protected_colors <- c("hareyb", "harerb", "raptorb", "raptoryb", "tortoiseyb", "tortoiserb", "salmonrb", "salmonyb", "weevilyb", "weevilrb", "frogrb", "frogyb")
+
   img_path <- system.file("extdata", paste0(animal, ".png"), package = "livimals")
   if (img_path == "") stop("oops no image found for that animal!")
   img <- magick::image_read(img_path)
 
- # Determine if the PNG is grayscale (i.e., safe to recolor)
-is_grayscale <- magick::image_type(img) == "Grayscale"
+# Determine whether this specific silhouette should NOT be recolored
+  is_protected <- animal %in% protected_colors
 
-# Decide whether to recolor
-should_recolor <- is_grayscale && !is.null(color)
+if (!is.null(mapping$fill)) {
+    fill_var <- rlang::quo_get_expr(mapping$fill)
+    unique_vals <- unique(data[[fill_var]])
 
-# Apply recoloring or not
-if (should_recolor) {
-    img_colored <- magick::image_colorize(img, opacity = 100, color = color)
-} else {
-    img_colored <- img   # keep original colors EXACTLY
-}
+    for (i in unique_vals) {
+      if (is.na(i)) next
 
+      # Only recolor if NOT protected
+      if (!is_protected) {
+        img_colored <- magick::image_colorize(img, opacity = 100, color = i)
+      } else {
+        img_colored <- img  
+      }
 
-    tmp_file <- tempfile(fileext = ".png")
+      tmp_file <- tempfile(fileext = ".png")
+      magick::image_write(img_colored, tmp_file)
+ data[data[[fill_var]] == i, "ColImage"] <- tmp_file
+    }
+ } else {
+	if (!is_protected) {
+      img_colored <- magick::image_colorize(img, opacity = 100, color = color)
+    } else {
+      img_colored <- img  # absolutely no recoloring
+    }
+
+tmp_file <- tempfile(fileext = ".png")
     magick::image_write(img_colored, tmp_file)
     data$ColImage <- tmp_file
-}
-
-
+  }
+	
   # User supplied mapping (uses aes)
   if (!is.null(mapping)) {
 
@@ -55,7 +71,7 @@ if (should_recolor) {
       df <- NULL
     }
 
-    return(
+return(
  	geom_image(data = df,
 	mapping = mapping,
 	image=df$image,

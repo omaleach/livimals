@@ -13,7 +13,7 @@
 col_livimal <- function(animal,
                         x = 1,
                         y = 1,
-                        color = "black",
+                        color = NULL,
                         mapping = NULL,
                         data = NULL, ...) {
 

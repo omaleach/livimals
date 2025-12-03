@@ -25,21 +25,38 @@ col_livimal <- function(animal,
   if (img_path == "") stop("oops no image found for that animal!")
   img <- magick::image_read(img_path)
 
-  # Read + recolor
-  if(!is.null(mapping$fill)){
-  	for(i in unique(data[,(rlang::quo_get_expr(mapping$fill))])[[1]]){
-		if(is.na(i)) next
-    		img_colored <- magick::image_colorize(img, opacity = 100, color = i)
-    		tmp_file <- tempfile(fileext = ".png")
-    		magick::image_write(img_colored, tmp_file)
-    		data[which(data[,rlang::quo_get_expr(mapping$fill)]==i),"ColImage"] <- tmp_file
-  	}
-  } else {
-  	img_colored <- magick::image_colorize(img, opacity = 100, color = color)
-  	tmp_file <- tempfile(fileext = ".png")
-    	magick::image_write(img_colored, tmp_file)
-  	data$ColImage <- tmp_file
+ # Read + recolor (optional)
+if ("fill" %in% rlang::names2(mapping)) {
+
+  # aes(fill = ...)
+  fill_var <- rlang::quo_get_expr(mapping$fill)
+  unique_vals <- unique(data[[fill_var]])
+
+  for (i in unique_vals) {
+    if (is.na(i)) next
+
+    # Only recolor black silhouettes
+    img_colored <-
+      if (!is.null(i)) magick::image_colorize(img, opacity = 100, color = i)
+      else img
+
+    tmp_file <- tempfile(fileext = ".png")
+    magick::image_write(img_colored, tmp_file)
+
+    data[data[[fill_var]] == i, "ColImage"] <- tmp_file
   }
+
+} else {
+  # No aes(fill)
+  if (!is.null(color)) {
+    img_colored <- magick::image_colorize(img, opacity = 100, color = color)
+  } else {
+    img_colored <- img  # keep original PNG colors (borders + fill)
+  }
+  tmp_file <- tempfile(fileext = ".png")
+  magick::image_write(img_colored, tmp_file)
+  data$ColImage <- tmp_file
+}
 
   # User supplied mapping (uses aes)
   if (!is.null(mapping)) {

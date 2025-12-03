@@ -47,16 +47,20 @@ if ("fill" %in% rlang::names2(mapping)) {
   }
 
 } else {
-  # No aes(fill)
-  if (!is.null(color)) {
-    img_colored <- magick::image_colorize(img, opacity = 100, color = color)
-  } else {
-    img_colored <- img  # keep original PNG colors (borders + fill)
-  }
-  tmp_file <- tempfile(fileext = ".png")
-  magick::image_write(img_colored, tmp_file)
-  data$ColImage <- tmp_file
+
+    should_recolor <- !is.null(color) && !is.na(color)
+
+    if (should_recolor) {
+        img_colored <- magick::image_colorize(img, opacity = 100, color = color)
+    } else {
+        img_colored <- img  # <-- keeps your yellow hare with border exactly as-is
+    }
+
+    tmp_file <- tempfile(fileext = ".png")
+    magick::image_write(img_colored, tmp_file)
+    data$ColImage <- tmp_file
 }
+
 
   # User supplied mapping (uses aes)
   if (!is.null(mapping)) {

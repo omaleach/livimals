@@ -25,36 +25,19 @@ col_livimal <- function(animal,
   if (img_path == "") stop("oops no image found for that animal!")
   img <- magick::image_read(img_path)
 
- # Read + recolor (optional)
-if ("fill" %in% rlang::names2(mapping)) {
+ # Determine if the PNG is grayscale (i.e., safe to recolor)
+is_grayscale <- magick::image_type(img) == "Grayscale"
 
-  # aes(fill = ...)
-  fill_var <- rlang::quo_get_expr(mapping$fill)
-  unique_vals <- unique(data[[fill_var]])
+# Decide whether to recolor
+should_recolor <- is_grayscale && !is.null(color)
 
-  for (i in unique_vals) {
-    if (is.na(i)) next
-
-    # Only recolor black silhouettes
-    img_colored <-
-      if (!is.null(i)) magick::image_colorize(img, opacity = 100, color = i)
-      else img
-
-    tmp_file <- tempfile(fileext = ".png")
-    magick::image_write(img_colored, tmp_file)
-
-    data[data[[fill_var]] == i, "ColImage"] <- tmp_file
-  }
-
+# Apply recoloring or not
+if (should_recolor) {
+    img_colored <- magick::image_colorize(img, opacity = 100, color = color)
 } else {
+    img_colored <- img   # keep original colors EXACTLY
+}
 
-    should_recolor <- !is.null(color) && !is.na(color)
-
-    if (should_recolor) {
-        img_colored <- magick::image_colorize(img, opacity = 100, color = color)
-    } else {
-        img_colored <- img  # <-- keeps your yellow hare with border exactly as-is
-    }
 
     tmp_file <- tempfile(fileext = ".png")
     magick::image_write(img_colored, tmp_file)

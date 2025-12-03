@@ -23,33 +23,41 @@ col_livimal <- function(animal,
 
   img_path <- system.file("extdata", paste0(animal, ".png"), package = "livimals")
   if (img_path == "") stop("oops no image found for that animal!")
+  img <- magick::image_read(img_path)
 
   # Read + recolor
-  img <- magick::image_read(img_path)
-  img_colored <- magick::image_colorize(img, opacity = 100, color = color)
-
-  # Write to temp file
-  tmp_file <- tempfile(fileext = ".png")
-  magick::image_write(img_colored, tmp_file)
+  if(!is.null(mapping$fill)){
+  	for(i in unique(data[,(rlang::quo_get_expr(mapping$fill))])[[1]]){
+		if(is.na(i)) next
+    		img_colored <- magick::image_colorize(img, opacity = 100, color = i)
+    		tmp_file <- tempfile(fileext = ".png")
+    		magick::image_write(img_colored, tmp_file)
+    		data[which(data[,rlang::quo_get_expr(mapping$fill)]==i),"ColImage"] <- tmp_file
+  	}
+  } else {
+  	img_colored <- magick::image_colorize(img, opacity = 100, color = color)
+  	tmp_file <- tempfile(fileext = ".png")
+    	magick::image_write(img_colored, tmp_file)
+  	data$ColImage <- tmp_file
+  }
 
   # User supplied mapping (uses aes)
   if (!is.null(mapping)) {
 
     if (!is.null(data)) {
       df <- data
-      df$image <- rep(tmp_file, nrow(df))
+      df$image <- df$ColImage
     } else {
       df <- NULL
     }
 
     return(
-      ggimage::geom_image(
-        data = df,
-        mapping = mapping,
-        image = tmp_file,
-        by = "width",
-        asp = 1,
-        inherit.aes = TRUE, ...))
+ 	geom_image(data = df,
+	mapping = mapping,
+	image=df$image,
+	by = "width",
+	asp = 1,
+	inherit.aes = TRUE, ...))
   }
   # No mapping
   if (!is.null(data)) {
@@ -61,10 +69,9 @@ col_livimal <- function(animal,
     }
     df <- data.frame(x = x, y = y, image = tmp_file)
   }
-
   ggimage::geom_image(
     data = df,
-    mapping = aes(x = x, y = y, image = image),
+    mapping = aes(x = x, y = y),
     image = tmp_file,
     by = "width",
     asp = 1,

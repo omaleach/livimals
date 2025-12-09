@@ -15,6 +15,7 @@ col_livimal <- function(animal,
                         y = 1,
                         color = "black",
                         mapping = NULL,
+			border=F,
                         data = NULL, ...) {
 
   if (!requireNamespace("magick", quietly = TRUE)) {
@@ -23,10 +24,15 @@ col_livimal <- function(animal,
 
 # Names of PNGs that should NEVER be recolored
   protected_colors <- c("hareyb", "harerb", "raptorb", "raptoryb", "tortoiseyb", "tortoiserb", "salmonrb", "salmonyb", "weevilyb", "weevilrb", "frogrb", "frogyb")
-
+ if(border==T){
+	  animal=paste0(animal, "rb")
+  }
   img_path <- system.file("extdata", paste0(animal, ".png"), package = "livimals")
   if (img_path == "") stop("oops no image found for that animal!")
+ 
   img <- magick::image_read(img_path)
+  centre <- paste0("+", magick::image_info(img)$width/2, "+", magick::image_info(img)$height/2)
+
 
 # Determine whether this specific silhouette should NOT be recolored
   is_protected <- animal %in% protected_colors
@@ -39,15 +45,15 @@ if (!is.null(mapping$fill)) {
       if (is.na(i)) next
 
       # Only recolor if NOT protected
-      if (!is_protected) {
-        img_colored <- magick::image_colorize(img, opacity = 100, color = i)
+      if (!is_protected | border == T) {
+        img_colored <- magick::image_fill(img,i, point=centre, fuzz=0)
       } else {
         img_colored <- img  
       }
 
       tmp_file <- tempfile(fileext = ".png")
       magick::image_write(img_colored, tmp_file)
- data[data[[fill_var]] == i, "ColImage"] <- tmp_file
+      data[which(data[,fill_var] == i), "ColImage"] <- tmp_file
     }
  } else {
 	if (!is_protected) {

@@ -25,7 +25,7 @@ col_livimal <- function(animal,
 # Names of PNGs that should NEVER be recolored
   protected_colors <- c("hareyb", "harerb", "raptorb", "raptoryb", "tortoiseyb", "tortoiserb", "salmonrb", "salmonyb", "weevilyb", "weevilrb", "frogrb", "frogyb")
  if(border==T){
-	  animal=paste0(animal, "wb")
+	  animal=paste0(animal, "rb")
   }
   img_path <- system.file("extdata", paste0(animal, ".png"), package = "livimals")
   if (img_path == "") stop("oops no image found for that animal!")
